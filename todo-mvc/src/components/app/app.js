@@ -7,17 +7,17 @@ import Footer from '../footer';
 const App = () => {
     const todoData = [
         {
-            status: 'completed',
+            //status: 'completed',
             description: 'Completed task',
             created: 'created 17 seconds ago'
         },
         {
-            status: 'editing',
+            //status: 'editing',
             description: 'Editing task',
             created: 'created 5 minutes ago'
         },
         {
-            status: 'active',
+            //status: 'active',
             description: 'Active task',
             created: 'created 5 minutes ago'
         }

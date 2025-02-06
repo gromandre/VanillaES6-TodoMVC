@@ -2,17 +2,31 @@ import React, {Component} from "react";
 import './task.css';
 
 export default class Task extends Component {
+    state = {
+      done: false
+    };
+
+    onChangeComplite = () => {
+        this.setState((prevState) => ({
+            done: !prevState.done
+        }));
+    }
+
     render() {
         const { status, description, created } = this.props;
+        const { done } = this.state;
+
+        let classNameLi = done ? 'completed' : 'active';
 
         return (
-            <li className={status}>
+            <li className={ classNameLi }>
                 <div className="view">
                     <input
                         className="toggle"
                         type="checkbox"
-                        checked={status === 'completed'}
-                        onChange={() => console.log("Чекбокс изменен")}
+                        checked={done}
+                        onChange={this.onChangeComplite}
+
                     />
                     <label>
                         <span className="description">{description}</span>
