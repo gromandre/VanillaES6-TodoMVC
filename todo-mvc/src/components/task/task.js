@@ -7,13 +7,13 @@ export default class Task extends Component {
     };
 
     onChangeComplite = () => {
-        this.setState((prevState) => ({
-            done: !prevState.done
+        this.setState(({ done }) => ({
+            done: !done
         }));
     }
 
     render() {
-        const { status, description, created } = this.props;
+        const { description, created } = this.props;
         const { done } = this.state;
 
         let classNameLi = done ? 'completed' : 'active';
@@ -35,7 +35,7 @@ export default class Task extends Component {
                     <button className="icon icon-edit"></button>
                     <button className="icon icon-destroy"></button>
                 </div>
-                {status === 'editing' && (
+                {classNameLi === 'editing' && (
                     <input
                         type="text"
                         className="edit"
