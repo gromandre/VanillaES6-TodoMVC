@@ -1,13 +1,25 @@
-import React from "react";
+import React, { Component } from "react";
 import './app-header.css'
 
-const AppHeader = () => {
-    return (
-        <header className="header">
-            <h1>todos</h1>
-            <input className="new-todo" placeholder="What needs to be done?" autoFocus/>
-        </header>
-    )
-};
+export default class AppHeader extends Component {
+    render() {
+        const { onTaskAdded } = this.props;
 
-export default AppHeader;
+        return (
+            <header className="header">
+                <h1>todos</h1>
+                <input
+                    className="new-todo"
+                    placeholder="What needs to be done?"
+                    autoFocus
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter" && e.target.value) {
+                            onTaskAdded(e.target.value);
+                            e.target.value = ""; // Очистка поля
+                        }
+                    }}
+                />
+            </header>
+        )
+    }
+};

@@ -4,7 +4,7 @@ import Task from '../task'; // Импортируем компонент Task
 
 export default class TaskList extends Component {
     render() {
-        const { todos, onDeleted } = this.props;
+        const { todos, onDeleted, onToggleDone } = this.props;
 
         return (
             <ul className="todo-list">
@@ -14,7 +14,9 @@ export default class TaskList extends Component {
                         status={todo.status}
                         description={todo.description}
                         created={todo.created}
+                        done={todo.done}
                         onDeleted={() => onDeleted(todo.id)}
+                        onToggleDone={() => onToggleDone(todo.id)}
                     />
                 ))}
             </ul>

@@ -2,22 +2,18 @@ import React, {Component} from "react";
 import './task.css';
 
 export default class Task extends Component {
-    state = {
-      done: false
-    };
+    // state = {
+    //   done: false
+    // };
 
-    onChangeComplite = () => {
-        this.setState(({ done }) => ({
-            done: !done
-        }));
-    }
+
 
     render() {
-        const { description, created, onDeleted } = this.props;
-        const { done } = this.state;
+        const { description, created, onDeleted, onToggleDone, done } = this.props;
+
 
         let classNameLi = done ? 'completed' : 'active';
-
+//onChange={this.onChangeComplite}
         return (
             <li className={ classNameLi }>
                 <div className="view">
@@ -25,7 +21,7 @@ export default class Task extends Component {
                         className="toggle"
                         type="checkbox"
                         checked={done}
-                        onChange={this.onChangeComplite}
+                        onChange={onToggleDone}
 
                     />
                     <label>

@@ -5,30 +5,26 @@ import TaskList from '../task-list';
 import Footer from '../footer';
 
 export default class App extends Component {
+    maxId = 100;
+
     state = {
         todoData : [
-            {
-                //status: 'completed',
-                description: 'Completed task',
-                created: 'created 17 seconds ago',
-                id: 1
-            },
-            {
-                //status: 'editing',
-                description: 'Editing task',
-                created: 'created 5 minutes ago',
-                id: 2
-            },
-            {
-                //status: 'active',
-                description: 'Active task',
-                created: 'created 5 minutes ago',
-                id: 3
-            }
+            this.createTask('Completed task'),
+            this.createTask('Editing task'),
+            this.createTask('Active task')
         ]
     };
 
-    deleteItem = (id) => {
+    createTask(text){
+        return {
+            description: text,
+            created: 'created 17 seconds ago',
+            id: this.maxId++,
+            done: false
+        }
+    }
+
+    deleteTask = (id) => {
         this.setState(({ todoData }) => {
             const index = todoData.findIndex((el) => el.id === id);
 
@@ -43,14 +39,45 @@ export default class App extends Component {
         })
     };
 
+    addTask = (text) => {
+
+        const newTask = this.createTask(text);
+
+        this.setState(({ todoData }) => {
+            return {
+                todoData: [...todoData, newTask]
+            }
+        })
+    };
+
+    onToggleDone = (id) => {
+        this.setState(({ todoData }) => {
+            const index = todoData.findIndex((el) => el.id === id);
+            const oldTask = todoData[index];
+            const newTask = { ...oldTask, done: !oldTask.done };
+
+            const newArr = [
+                ...todoData.slice(0, index),
+                newTask,
+                ...todoData.slice(index + 1)
+            ];
+            return {
+                todoData: newArr
+            }
+        })
+    };
+
     render() {
         return (
             <>
-                <AppHeader />
+                <AppHeader
+                    onTaskAdded={this.addTask}
+                />
                 <section className="main">
                     <TaskList
                         todos={this.state.todoData}
-                        onDeleted={this.deleteItem}
+                        onDeleted={this.deleteTask}
+                        onToggleDone={this.onToggleDone}
                     />
                     <Footer />
                 </section>
