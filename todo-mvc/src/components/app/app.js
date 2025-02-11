@@ -68,6 +68,17 @@ export default class App extends Component {
         })
     };
 
+    deleteTasksCompleted = () => {
+        this.setState(({ todoData }) => {
+            const newArr = todoData.filter((el) => !el.done);
+
+
+            return {
+                todoData: newArr
+            }
+        })
+    }
+
     setFilter = (filter) => {
         this.setState({ filter });
     };
@@ -106,6 +117,7 @@ export default class App extends Component {
                         taskCount={taskCount}
                         filter={filter}
                         setFilter={this.setFilter}
+                        deleteTasksCompleted={this.deleteTasksCompleted}
                     />
                 </section>
             </>
