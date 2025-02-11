@@ -68,6 +68,10 @@ export default class App extends Component {
     };
 
     render() {
+        const taskCount = this.state.todoData.filter((el) => {
+            return !el.done;
+        }).length;
+
         return (
             <>
                 <AppHeader
@@ -79,7 +83,7 @@ export default class App extends Component {
                         onDeleted={this.deleteTask}
                         onToggleDone={this.onToggleDone}
                     />
-                    <Footer />
+                    <Footer taskCount={taskCount}/>
                 </section>
             </>
         );
