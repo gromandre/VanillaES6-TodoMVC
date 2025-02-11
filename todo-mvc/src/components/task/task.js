@@ -13,7 +13,7 @@ export default class Task extends Component {
     }
 
     render() {
-        const { description, created } = this.props;
+        const { description, created, onDeleted } = this.props;
         const { done } = this.state;
 
         let classNameLi = done ? 'completed' : 'active';
@@ -33,7 +33,7 @@ export default class Task extends Component {
                         <span className="created">{created}</span>
                     </label>
                     <button className="icon icon-edit"></button>
-                    <button className="icon icon-destroy"></button>
+                    <button className="icon icon-destroy" onClick={onDeleted}></button>
                 </div>
                 {classNameLi === 'editing' && (
                     <input
