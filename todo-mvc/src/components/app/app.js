@@ -3,6 +3,7 @@ import './app.css';
 import AppHeader from '../app-header';
 import TaskList from '../task-list';
 import Footer from '../footer';
+import { intervalToDuration, formatDistance } from 'date-fns';
 
 export default class App extends Component {
     maxId = 100;
@@ -19,7 +20,7 @@ export default class App extends Component {
     createTask(text){
         return {
             description: text,
-            created: 'created 17 seconds ago',
+            createdAt: new Date(),
             id: this.maxId++,
             done: false
         }

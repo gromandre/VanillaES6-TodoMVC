@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from 'prop-types';
 import './app-header.css'
 
 export default class AppHeader extends Component {
@@ -22,4 +23,12 @@ export default class AppHeader extends Component {
             </header>
         )
     }
+};
+
+AppHeader.defaultProps = {
+    onTaskAdded: () => {}
+};
+
+AppHeader.propTypes = {
+    onTaskAdded: PropTypes.func
 };

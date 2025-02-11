@@ -1,19 +1,32 @@
 import React, {Component} from "react";
+import PropTypes from 'prop-types';
 import './task.css';
+import { intervalToDuration, formatDistance } from 'date-fns';
 
 export default class Task extends Component {
-    // state = {
-    //   done: false
-    // };
-
-
 
     render() {
-        const { description, created, onDeleted, onToggleDone, done } = this.props;
+        const { description, createdAt, onDeleted, onToggleDone, done } = this.props;
 
 
         let classNameLi = done ? 'completed' : 'active';
-//onChange={this.onChangeComplite}
+
+        // Получаем разницу в миллисекундах
+        const createdDate = new Date(createdAt);
+        const now = new Date();
+        const timeDifference = now - createdDate; // разница в миллисекундах
+
+        let timeAgo = '';
+
+        // Если прошло меньше 60 секунд, показываем точное количество секунд
+        if (timeDifference < 60000) {
+            const seconds = Math.floor(timeDifference / 1000); // переводим в секунды
+            timeAgo = `${seconds} seconds ago`;
+        } else {
+            // Иначе используем формат "X minutes ago"
+            timeAgo = formatDistance(createdDate, now, { addSuffix: true });
+        }
+
         return (
             <li className={ classNameLi }>
                 <div className="view">
@@ -26,7 +39,7 @@ export default class Task extends Component {
                     />
                     <label>
                         <span className="description">{description}</span>
-                        <span className="created">{created}</span>
+                        <span className="created"> created {timeAgo}</span>
                     </label>
                     <button className="icon icon-edit"></button>
                     <button className="icon icon-destroy" onClick={onDeleted}></button>
@@ -43,3 +56,21 @@ export default class Task extends Component {
         );
     }
 }
+
+Task.defaultProps = {
+    description: 'No description',
+    createdAt: new Date().toISOString(),
+    done: false,
+    onDeleted: () => {},
+    onToggleDone: () => {},
+    onChangeDescription: () => {}
+};
+
+Task.propTypes = {
+    description: PropTypes.string,
+    createdAt: PropTypes.string,
+    onDeleted: PropTypes.func,
+    onToggleDone: PropTypes.func,
+    done: PropTypes.bool,
+    onChangeDescription: PropTypes.func
+};

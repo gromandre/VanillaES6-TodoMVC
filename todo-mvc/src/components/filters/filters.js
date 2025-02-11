@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from 'prop-types';
 import './filters.css';
 
 const Filters = ({ filter, setFilter }) => {
@@ -32,3 +33,8 @@ const Filters = ({ filter, setFilter }) => {
 }
 
 export default Filters;
+
+Filters.propTypes = {
+    filter: PropTypes.string.isRequired,
+    setFilter: PropTypes.func.isRequired
+}
