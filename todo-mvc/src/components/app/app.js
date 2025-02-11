@@ -12,7 +12,8 @@ export default class App extends Component {
             this.createTask('Completed task'),
             this.createTask('Editing task'),
             this.createTask('Active task')
-        ]
+        ],
+        filter : 'all'
     };
 
     createTask(text){
@@ -67,8 +68,26 @@ export default class App extends Component {
         })
     };
 
+    setFilter = (filter) => {
+        this.setState({ filter });
+    };
+
+    filterTasks = (tasks, filter) => {
+        switch (filter) {
+            case 'active':
+                return tasks.filter(task => !task.done);
+            case 'completed':
+                return tasks.filter(task => task.done);
+            default:
+                return tasks;
+        }
+    };
+
     render() {
-        const taskCount = this.state.todoData.filter((el) => {
+        const { todoData, filter } = this.state;
+        const filteredTasks = this.filterTasks(todoData, filter);
+
+        const taskCount = todoData.filter((el) => {
             return !el.done;
         }).length;
 
@@ -79,11 +98,15 @@ export default class App extends Component {
                 />
                 <section className="main">
                     <TaskList
-                        todos={this.state.todoData}
+                        todos={filteredTasks}
                         onDeleted={this.deleteTask}
                         onToggleDone={this.onToggleDone}
                     />
-                    <Footer taskCount={taskCount}/>
+                    <Footer
+                        taskCount={taskCount}
+                        filter={filter}
+                        setFilter={this.setFilter}
+                    />
                 </section>
             </>
         );
