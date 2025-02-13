@@ -60,7 +60,7 @@ Task.defaultProps = {
 
 Task.propTypes = {
   description: PropTypes.string,
-  createdAt: PropTypes.string,
+  createdAt: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(Date)]).isRequired,
   onDeleted: PropTypes.func,
   onToggleDone: PropTypes.func,
   done: PropTypes.bool,
