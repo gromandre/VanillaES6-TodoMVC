@@ -82,6 +82,19 @@ export default class App extends Component {
     }
   };
 
+  changeDescription = (id, newDescription) => {
+    this.setState(({ todoData }) => {
+      return {
+        todoData: todoData.map((item) => {
+          if (item.id === id) {
+            return { ...item, description: newDescription };
+          }
+          return item;
+        }),
+      };
+    });
+  };
+
   render() {
     const { todoData, filter } = this.state;
     const filteredTasks = this.filterTasks(todoData, filter);
@@ -94,7 +107,12 @@ export default class App extends Component {
       <>
         <AppHeader onTaskAdded={this.addTask} />
         <section className="main">
-          <TaskList todos={filteredTasks} onDeleted={this.deleteTask} onToggleDone={this.onToggleDone} />
+          <TaskList
+            todos={filteredTasks}
+            onDeleted={this.deleteTask}
+            onToggleDone={this.onToggleDone}
+            onChangeDescription={this.changeDescription}
+          />
           <Footer
             taskCount={taskCount}
             filter={filter}

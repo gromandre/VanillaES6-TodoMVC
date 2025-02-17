@@ -4,10 +4,23 @@ import './task.css';
 import { formatDistance } from 'date-fns';
 
 export default class Task extends Component {
+  state = {
+    isEditing: false,
+  };
+
+  handleEditClick = () => {
+    this.setState({ isEditing: true });
+  };
+
   render() {
     const { description, createdAt, onDeleted, onToggleDone, done } = this.props;
+    const { isEditing } = this.state;
 
+    // Формируем классы для li
     let classNameLi = done ? 'completed' : 'active';
+    if (isEditing) {
+      classNameLi += ' editing';
+    }
 
     // Получаем разницу в миллисекундах
     const createdDate = new Date(createdAt);
@@ -33,15 +46,30 @@ export default class Task extends Component {
             <span className="description">{description}</span>
             <span className="created"> created {timeAgo}</span>
           </label>
-          <button className="icon icon-edit"></button>
+          <button className="icon icon-edit" onClick={this.handleEditClick}></button>
           <button className="icon icon-destroy" onClick={onDeleted}></button>
         </div>
-        {classNameLi === 'editing' && (
+        {isEditing && (
           <input
             type="text"
             className="edit"
-            value={description}
-            onChange={(e) => console.log('Новое описание:', e.target.value)}
+            defaultValue={description}
+            onBlur={(e) => {
+              if (e.target.value.trim()) {
+                this.props.onChangeDescription(e.target.value);
+              }
+              this.setState({ isEditing: false });
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && e.target.value.trim()) {
+                this.props.onChangeDescription(e.target.value);
+                this.setState({ isEditing: false });
+              }
+              if (e.key === 'Escape') {
+                this.setState({ isEditing: false });
+              }
+            }}
+            autoFocus
           />
         )}
       </li>
@@ -60,7 +88,7 @@ Task.defaultProps = {
 
 Task.propTypes = {
   description: PropTypes.string,
-  createdAt: PropTypes.string,
+  createdAt: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(Date)]),
   onDeleted: PropTypes.func,
   onToggleDone: PropTypes.func,
   done: PropTypes.bool,
