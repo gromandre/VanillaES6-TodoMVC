@@ -5,6 +5,7 @@ import PropTypes from 'prop-types'; // Импортируем компонент
 
 export default class TaskList extends Component {
   render() {
+
     const { todos, onDeleted, onToggleDone, onChangeDescription } = this.props;
 
     const elements = todos.map((item) => {

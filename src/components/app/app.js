@@ -82,6 +82,7 @@ export default class App extends Component {
     }
   };
 
+
   changeDescription = (id, newDescription) => {
     this.setState(({ todoData }) => {
       return {
@@ -93,7 +94,7 @@ export default class App extends Component {
         }),
       };
     });
-  };
+
 
   render() {
     const { todoData, filter } = this.state;
@@ -112,6 +113,7 @@ export default class App extends Component {
             onDeleted={this.deleteTask}
             onToggleDone={this.onToggleDone}
             onChangeDescription={this.changeDescription}
+
           />
           <Footer
             taskCount={taskCount}
