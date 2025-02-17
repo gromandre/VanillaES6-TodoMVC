@@ -82,11 +82,19 @@ export default class App extends Component {
     }
   };
 
-  editItem = (id, text) => {
-    this.setState(({ todoData }) => ({
-      todoData: todoData.map((item) => (item.id === id ? { ...item, description: text } : item)),
-    }));
-  };
+
+  changeDescription = (id, newDescription) => {
+    this.setState(({ todoData }) => {
+      return {
+        todoData: todoData.map((item) => {
+          if (item.id === id) {
+            return { ...item, description: newDescription };
+          }
+          return item;
+        }),
+      };
+    });
+
 
   render() {
     const { todoData, filter } = this.state;
@@ -104,7 +112,8 @@ export default class App extends Component {
             todos={filteredTasks}
             onDeleted={this.deleteTask}
             onToggleDone={this.onToggleDone}
-            onEdited={this.editItem}
+            onChangeDescription={this.changeDescription}
+
           />
           <Footer
             taskCount={taskCount}

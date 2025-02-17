@@ -1,66 +1,96 @@
-import React, { useState } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './task.css';
 import { formatDistance } from 'date-fns';
 
-export default function Task({ description, onDeleted, onToggleDone, completed, createdAt, onEdited }) {
-  const [isEditing, setIsEditing] = useState(false);
-  const [editValue, setEditValue] = useState(description);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onEdited(editValue);
-    setIsEditing(false);
+export default class Task extends Component {
+  state = {
+    isEditing: false,
   };
 
-  const handleKeyDown = (e) => {
-    if (e.key === 'Escape') {
-      setIsEditing(false);
-      setEditValue(description);
+  handleEditClick = () => {
+    this.setState({ isEditing: true });
+  };
+
+  render() {
+    const { description, createdAt, onDeleted, onToggleDone, done } = this.props;
+    const { isEditing } = this.state;
+
+    // Формируем классы для li
+    let classNameLi = done ? 'completed' : 'active';
+    if (isEditing) {
+      classNameLi += ' editing';
     }
-  };
 
-  let className = '';
-  if (completed) {
-    className = 'completed';
-  }
-  if (isEditing) {
-    className += ' editing';
-  }
+    // Получаем разницу в миллисекундах
+    const createdDate = new Date(createdAt);
+    const now = new Date();
+    const timeDifference = now - createdDate; // разница в миллисекундах
 
-  return (
-    <li className={className}>
-      <div className="view">
-        <input className="toggle" type="checkbox" onChange={onToggleDone} checked={completed} />
-        <label>
-          <span className="description">{description}</span>
-          <span className="created">created {formatDistance(createdAt, new Date(), { addSuffix: true })}</span>
-        </label>
-        <button className="icon icon-edit" onClick={() => setIsEditing(true)}></button>
-        <button className="icon icon-destroy" onClick={onDeleted}></button>
-      </div>
-      {isEditing && (
-        <form onSubmit={handleSubmit}>
+    let timeAgo = '';
+
+    // Если прошло меньше 60 секунд, показываем точное количество секунд
+    if (timeDifference < 60000) {
+      const seconds = Math.floor(timeDifference / 1000); // переводим в секунды
+      timeAgo = `${seconds} seconds ago`;
+    } else {
+      // Иначе используем формат "X minutes ago"
+      timeAgo = formatDistance(createdDate, now, { addSuffix: true });
+    }
+
+    return (
+      <li className={classNameLi}>
+        <div className="view">
+          <input className="toggle" type="checkbox" checked={done} onChange={onToggleDone} />
+          <label>
+            <span className="description">{description}</span>
+            <span className="created"> created {timeAgo}</span>
+          </label>
+          <button className="icon icon-edit" onClick={this.handleEditClick}></button>
+          <button className="icon icon-destroy" onClick={onDeleted}></button>
+        </div>
+        {isEditing && (
           <input
             type="text"
             className="edit"
-            value={editValue}
-            onChange={(e) => setEditValue(e.target.value)}
-            onKeyDown={handleKeyDown}
-            onBlur={handleSubmit}
+            defaultValue={description}
+            onBlur={(e) => {
+              if (e.target.value.trim()) {
+                this.props.onChangeDescription(e.target.value);
+              }
+              this.setState({ isEditing: false });
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && e.target.value.trim()) {
+                this.props.onChangeDescription(e.target.value);
+                this.setState({ isEditing: false });
+              }
+              if (e.key === 'Escape') {
+                this.setState({ isEditing: false });
+              }
+            }}
             autoFocus
           />
-        </form>
-      )}
-    </li>
-  );
+        )}
+      </li>
+    );
+  }
 }
 
+Task.defaultProps = {
+  description: 'No description',
+  createdAt: new Date().toISOString(),
+  done: false,
+  onDeleted: () => {},
+  onToggleDone: () => {},
+  onChangeDescription: () => {},
+};
+
 Task.propTypes = {
-  description: PropTypes.string.isRequired,
-  onDeleted: PropTypes.func.isRequired,
-  onToggleDone: PropTypes.func.isRequired,
-  onEdited: PropTypes.func.isRequired,
-  completed: PropTypes.bool.isRequired,
-  createdAt: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(Date)]).isRequired,
+  description: PropTypes.string,
+  createdAt: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(Date)]),
+  onDeleted: PropTypes.func,
+  onToggleDone: PropTypes.func,
+  done: PropTypes.bool,
+  onChangeDescription: PropTypes.func,
 };
